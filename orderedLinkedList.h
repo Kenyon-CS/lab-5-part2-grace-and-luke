@@ -13,7 +13,6 @@
 using namespace std;
 
 template <class Type>
-//class orderedLinkedList: public linkedListType<Type> //It was like this originally but our compiler had trouble with it
 class orderedLinkedList: public linkedListType<int>
 {
 public:
@@ -47,6 +46,8 @@ public:
       //    of the new list, and count is decremented by 1. If
       //    deleteItem is not in the list, an appropriate message
       //    is printed.
+
+    void mergeLists(orderedLinkedList<Type> &list1, orderedLinkedList<Type> &list2);
 };
 
 template <class Type>
@@ -191,5 +192,87 @@ void orderedLinkedList<Type>::deleteNode(const Type& deleteItem)
     }
 }//end deleteNode
 
+template<class Type>
+void orderedLinkedList<Type>::mergeLists(orderedLinkedList<Type> &list1,orderedLinkedList<Type> &list2)
+{
+    //From Assignmnet:
+    //This function creates a new list by merging the
+    //elements of list1 and list2.
+    //Postcondition: first points to the merged list; list1
+    // and list2 are empty
+
+    nodeType<Type> *current1 = list1.first; // points to the beginning of list 1
+    nodeType<Type> *current2 = list2.first; // points to the beginning of list 2
+    nodeType<Type> *headMerge = NULL; // points to the head of the list of merged values
+    nodeType<Type> *currentMerge = NULL; // points to list of merged values
+
+    // while there is stuff in both lists, merge them
+    while(current1!=NULL && current2!=NULL){
+        nodeType<Type> *newNode = new nodeType<Type>; // create new node
+        newNode->link = NULL; // initialize link with null
+        // if the elements in the two lists are the same, add twice
+        if(current1->info==current2->info){
+            newNode->info = current1->info; // assign the value from list1
+            // if the head of the merged list is null, make newNode the head
+            if (headMerge == NULL){
+                headMerge = newNode;
+                currentMerge = headMerge;
+            } else { // otherwise link newNode to the merged list
+                currentMerge->link = newNode;
+                currentMerge = newNode;
+            }
+            // we need a duplicate node for the duplicate value
+            newNode = new nodeType<Type>;
+            newNode->info = current1->info;
+            newNode->link = NULL;
+            currentMerge->link = newNode;
+            currentMerge = newNode;
+            current1 = current1->link; // move forward in list1
+            current2 = current2->link; // move forward in list2
+        } else {
+            if(current1->info>current2->info){
+                newNode->info = current2->info; // assign the value from list2
+                current2 = current2->link; // move forward in list2
+            } else {
+                newNode->info = current1->info; // assign the value from list1
+                current1 = current1->link; // move forward in list1
+            }
+            // same process as above to merge newNode to list
+            if (headMerge == NULL){
+                headMerge = newNode;
+                currentMerge = headMerge;
+            } else {
+                currentMerge->link = newNode;
+                currentMerge = newNode;
+            }
+        }
+    }
+
+    // if any nodes remain in list1, append to merged list
+    while (current1 != NULL) {
+        nodeType<Type> *newNode = new nodeType<Type>;
+        newNode->info = current1->info; // get the rest of the info
+        newNode->link = nullptr; // initialize link
+        currentMerge->link = newNode; // bring in new node
+        currentMerge = newNode; // go to new node
+        current1 = current1->link; // move onward in list1
+    }
+
+    // if any nodes remain in list2, append to merged list
+    while (current2 != NULL) {
+        nodeType<Type> *newNode = new nodeType<Type>;
+        newNode->info = current2->info; // get the rest of the info
+        newNode->link = nullptr; // initialize link
+        currentMerge->link = newNode; // bring in new node
+        currentMerge = newNode; // go to new node
+        current2 = current2->link; // move onward in list2
+    }
+
+    // set both input lists to empty
+    list1.first=NULL;
+    list2.first=NULL;
+    // merged list is new list
+    this->first = headMerge;
+}
 
 #endif

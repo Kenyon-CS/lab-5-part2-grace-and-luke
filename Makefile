@@ -5,10 +5,10 @@ CXX = g++
 CXXFLAGS = -Wall -std=c++11
 
 # Target executable
-TARGET = orderedlinkedlist_demo
+TARGET = oLL_demo
 
 # Source files
-SRC = testProgLinkedList.cpp
+SRC = main.cpp
 
 # Object files (generated from the source files)
 OBJ = $(SRC:.cpp=.o)
